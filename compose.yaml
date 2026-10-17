@@ -1,0 +1,44 @@
+name: signal-observatory
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      - APP_ENV=demo
+      - DEMO_AUTH_SECRET=${DEMO_AUTH_SECRET:-dev-only-secret}
+      - DB_PATH=/app/data/signal_observatory.db
+      - DATABASE_URL=sqlite+aiosqlite:///./data/signal_observatory.db
+    volumes:
+      - signal_data:/app/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - keycloak
+    profiles: ["backend"]
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "127.0.0.1:3000:3000"
+    profiles: ["frontend"]
+
+  # Keycloak for production OIDC (demo mode does not require it)
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=change-me
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    ports:
+      - "127.0.0.1:8080:8080"
+    profiles: ["keycloak"]
+
+volumes:
+  signal_data:
+  keycloak_data:

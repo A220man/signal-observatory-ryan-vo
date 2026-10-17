@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "signal-observatory-ryan-vo",
+  "owner": "A220man",
+  "email": "ryandtvo@gmail.com",
+  "domain": "AI/ML developer tools",
+  "workflows": [
+    "Store memory signals from agent sessions with workspace/project/tags",
+    "Generate relevance-ranked handoff briefing using TF-IDF + temporal decay",
+    "Search and list signals with pagination and filtering"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "summary": "Work in progress: signal-observatory-ryan-vo",
+  "status": "work-in-progress"
+}

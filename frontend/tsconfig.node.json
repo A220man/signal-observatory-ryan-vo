@@ -1,0 +1,1 @@
+{"compilerOptions":{"ts-node":false,"module":"ESNext","moduleResolution":"Node","allowSyntheticDefaultImports":true,"strict":true,"noEmit":true,"jsx":"react-jsx","composite":false},"include":["vite.config.ts"]}

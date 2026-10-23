@@ -2,7 +2,8 @@
  * Dashboard — lists signals with search and pagination.
  * Shows loading, error, and empty states.
  */
-import { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { useState, useCallback, useEffect } from "react";
 import { api, ApiError } from "../api/client";
 import { useAuth } from "./AuthProvider";
 import type { SignalPage, SignalRead, UiState } from "../types";
@@ -130,7 +131,11 @@ export const Dashboard: React.FC = () => {
               <tr key={s.id} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.5rem" }}>{s.workspace}</td>
                 <td style={{ padding: "0.5rem" }}>{s.project}</td>
-                <td style={{ padding: "0.5rem" }}>{s.content.slice(0, 80)}{s.content.length > 80 ? "…" : ""}</td>
+                <td style={{ padding: "0.5rem" }}>
+                  <Link to={`/signals/${s.id}`} style={{ color: "var(--accent)", textDecoration: "none", cursor: "pointer" }}>
+                    {s.content.slice(0, 80)}{s.content.length > 80 ? "…" : ""}
+                  </Link>
+                </td>
                 <td style={{ padding: "0.5rem" }}>{s.tags.join(", ")}</td>
                 <td style={{ padding: "0.5rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
                   {new Date(s.created_at).toLocaleString()}

@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-signal-store-and-handoff
+signal-detail-view
 
 ## Roadmap
 
@@ -26,6 +26,21 @@ Acceptance:
 Implementation: `backend/app/main.py`, `backend/app/core/config.py`, `backend/app/core/database.py`, `backend/app/core/auth.py`, `backend/app/core/relevance.py`, `backend/app/models/schemas.py`, `backend/app/services/signal_service.py`, `backend/app/api/signals.py`, `backend/app/api/handoff.py`, `backend/app/api/auth.py`, `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/components/AuthProvider.tsx`, `frontend/src/components/Dashboard.tsx`, `frontend/src/components/SignalForm.tsx`, `frontend/src/components/HandoffBriefing.tsx`, `frontend/src/components/HeaderNav.tsx`, `frontend/src/components/LoginPage.tsx`, `frontend/src/types/index.ts`
 
 Tests: `backend/tests/test_relevance.py`, `backend/tests/test_signals.py`, `backend/tests/test_auth.py`, `backend/tests/test_api.py`, `frontend/src/App.test.tsx`
+
+### signal-detail-view — Signal detail view with inline editing
+
+Status: done
+
+Acceptance:
+- Signal detail view at /signals/:id displays full content, metadata, tags, and relevance score
+- Operators and admins can edit signal content, tags, and agent_id inline
+- Admins can delete signals from detail view
+- Dashboard links signal content to detail view
+- Role-based access enforced on edit/delete actions
+
+Implementation: `frontend/src/components/SignalDetail.tsx`, `frontend/src/App.tsx`, `frontend/src/components/Dashboard.tsx`
+
+Tests: `frontend/src/App.test.tsx`
 
 ### llm-advisory-summaries — Optional LLM advisory summaries (opt-in)
 

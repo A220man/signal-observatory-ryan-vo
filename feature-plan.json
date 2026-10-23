@@ -1,1 +1,105 @@
-{"schema_version":1,"current_feature":"signal-store-and-handoff","features":[{"id":"signal-store-and-handoff","title":"Signal store with relevance-ranked handoff briefing","status":"done","acceptance":["POST /api/signals stores a signal with content, tags, workspace, project, and UTC timestamp","GET /api/signals lists signals with pagination and project filtering","GET /api/signals/{id} retrieves a single signal","POST /api/handoff computes a relevance-ranked briefing from stored signals using TF-IDF + temporal decay","Handoff briefing respects a byte budget and returns ranked, truncated signal excerpts","All data endpoints reject unauthenticated requests and enforce role-based access","Frontend dashboard creates signals and generates handoff briefings with loading/error/empty states","Backend has 12+ meaningful pytest tests covering domain logic, persistence, auth, and API workflows","Frontend has 3+ vitest tests covering user-visible behavior"],"implementation":["backend/app/main.py","backend/app/core/config.py","backend/app/core/database.py","backend/app/core/auth.py","backend/app/core/relevance.py","backend/app/models/schemas.py","backend/app/services/signal_service.py","backend/app/api/signals.py","backend/app/api/handoff.py","backend/app/api/auth.py","frontend/src/App.tsx","frontend/src/api/client.ts","frontend/src/components/AuthProvider.tsx","frontend/src/components/Dashboard.tsx","frontend/src/components/SignalForm.tsx","frontend/src/components/HandoffBriefing.tsx","frontend/src/components/HeaderNav.tsx","frontend/src/components/LoginPage.tsx","frontend/src/types/index.ts"],"tests":["backend/tests/test_relevance.py","backend/tests/test_signals.py","backend/tests/test_auth.py","backend/tests/test_api.py","frontend/src/App.test.tsx"]},{"id":"llm-advisory-summaries","title":"Optional LLM advisory summaries (opt-in)","status":"planned","acceptance":["LLM provider adapters for OpenAI-compatible, Anthropic, Gemini, Ollama","Summaries are labeled advisory and grounded in actual signal records","Provider errors never fabricate successful responses"],"implementation":[],"tests":[]},{"id":"full-keycloak-oidc","title":"Production Keycloak OIDC with SAML brokering","status":"planned","acceptance":["OIDC authorization-code login with state, nonce, PKCE, and library-validated tokens","Keycloak realm import with SAML identity provider brokering","Production mode refuses demo auth"],"implementation":[],"tests":[]},{"id":"signal-import-export","title":"Bulk import and export of signals","status":"planned","acceptance":["Import signals from JSON with validation","Export filtered signal sets as JSON"],"implementation":[],"tests":[]}]}
+{
+    "schema_version": 1,
+    "current_feature": "signal-detail-view",
+    "features": [
+        {
+            "id": "signal-store-and-handoff",
+            "title": "Signal store with relevance-ranked handoff briefing",
+            "status": "done",
+            "acceptance": [
+                "POST /api/signals stores a signal with content, tags, workspace, project, and UTC timestamp",
+                "GET /api/signals lists signals with pagination and project filtering",
+                "GET /api/signals/{id} retrieves a single signal",
+                "POST /api/handoff computes a relevance-ranked briefing from stored signals using TF-IDF + temporal decay",
+                "Handoff briefing respects a byte budget and returns ranked, truncated signal excerpts",
+                "All data endpoints reject unauthenticated requests and enforce role-based access",
+                "Frontend dashboard creates signals and generates handoff briefings with loading/error/empty states",
+                "Backend has 12+ meaningful pytest tests covering domain logic, persistence, auth, and API workflows",
+                "Frontend has 3+ vitest tests covering user-visible behavior"
+            ],
+            "implementation": [
+                "backend/app/main.py",
+                "backend/app/core/config.py",
+                "backend/app/core/database.py",
+                "backend/app/core/auth.py",
+                "backend/app/core/relevance.py",
+                "backend/app/models/schemas.py",
+                "backend/app/services/signal_service.py",
+                "backend/app/api/signals.py",
+                "backend/app/api/handoff.py",
+                "backend/app/api/auth.py",
+                "frontend/src/App.tsx",
+                "frontend/src/api/client.ts",
+                "frontend/src/components/AuthProvider.tsx",
+                "frontend/src/components/Dashboard.tsx",
+                "frontend/src/components/SignalForm.tsx",
+                "frontend/src/components/HandoffBriefing.tsx",
+                "frontend/src/components/HeaderNav.tsx",
+                "frontend/src/components/LoginPage.tsx",
+                "frontend/src/types/index.ts"
+            ],
+            "tests": [
+                "backend/tests/test_relevance.py",
+                "backend/tests/test_signals.py",
+                "backend/tests/test_auth.py",
+                "backend/tests/test_api.py",
+                "frontend/src/App.test.tsx"
+            ]
+        },
+        {
+            "id": "signal-detail-view",
+            "title": "Signal detail view with inline editing",
+            "status": "done",
+            "acceptance": [
+                "Signal detail view at /signals/:id displays full content, metadata, tags, and relevance score",
+                "Operators and admins can edit signal content, tags, and agent_id inline",
+                "Admins can delete signals from detail view",
+                "Dashboard links signal content to detail view",
+                "Role-based access enforced on edit/delete actions"
+            ],
+            "implementation": [
+                "frontend/src/components/SignalDetail.tsx",
+                "frontend/src/App.tsx",
+                "frontend/src/components/Dashboard.tsx"
+            ],
+            "tests": [
+                "frontend/src/App.test.tsx"
+            ]
+        },
+        {
+            "id": "llm-advisory-summaries",
+            "title": "Optional LLM advisory summaries (opt-in)",
+            "status": "planned",
+            "acceptance": [
+                "LLM provider adapters for OpenAI-compatible, Anthropic, Gemini, Ollama",
+                "Summaries are labeled advisory and grounded in actual signal records",
+                "Provider errors never fabricate successful responses"
+            ],
+            "implementation": [],
+            "tests": []
+        },
+        {
+            "id": "full-keycloak-oidc",
+            "title": "Production Keycloak OIDC with SAML brokering",
+            "status": "planned",
+            "acceptance": [
+                "OIDC authorization-code login with state, nonce, PKCE, and library-validated tokens",
+                "Keycloak realm import with SAML identity provider brokering",
+                "Production mode refuses demo auth"
+            ],
+            "implementation": [],
+            "tests": []
+        },
+        {
+            "id": "signal-import-export",
+            "title": "Bulk import and export of signals",
+            "status": "planned",
+            "acceptance": [
+                "Import signals from JSON with validation",
+                "Export filtered signal sets as JSON"
+            ],
+            "implementation": [],
+            "tests": []
+        }
+    ]
+}

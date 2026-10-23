@@ -10,6 +10,7 @@ import { LoginPage } from "./components/LoginPage";
 import { Dashboard } from "./components/Dashboard";
 import { SignalForm } from "./components/SignalForm";
 import { HandoffBriefing } from "./components/HandoffBriefing";
+import { SignalDetail } from "./components/SignalDetail";
 import { HeaderNav } from "./components/HeaderNav";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
@@ -48,6 +49,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <HandoffBriefing />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/signals/:id"
+            element={
+              <RequireAuth>
+                <SignalDetail />
               </RequireAuth>
             }
           />

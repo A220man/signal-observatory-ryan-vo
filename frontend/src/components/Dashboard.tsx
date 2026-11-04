@@ -17,6 +17,7 @@ export const Dashboard: React.FC = () => {
   const [hasMore, setHasMore] = useState(false);
   const [filterWorkspace, setFilterWorkspace] = useState("");
   const [filterProject, setFilterProject] = useState("");
+  const [filterTags, setFilterTags] = useState("");
   const [state, setState] = useState<UiState>("loading");
   const [error, setError] = useState("");
 
@@ -25,10 +26,15 @@ export const Dashboard: React.FC = () => {
     setState("loading");
     setError("");
     try {
+      const tagArray = filterTags
+        ? filterTags.split(",").map((t) => t.trim()).filter(Boolean)
+        : undefined;
+
       const resp = await api.listSignals(
         {
           workspace: filterWorkspace || undefined,
           project: filterProject || undefined,
+          tags: tagArray,
           page: pageNum,
           per_page: perPage,
         },
@@ -44,7 +50,7 @@ export const Dashboard: React.FC = () => {
       setError(msg);
       setState("error");
     }
-  }, [token, filterWorkspace, filterProject, perPage]);
+  }, [token, filterWorkspace, filterProject, filterTags, perPage]);
 
   useEffect(() => {
     fetchSignals(1);
@@ -91,6 +97,16 @@ export const Dashboard: React.FC = () => {
             value={filterProject}
             onChange={(e) => setFilterProject(e.target.value)}
             placeholder="Filter by project"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <label style={{ display: "block", fontSize: "0.8rem", marginBottom: "0.25rem", color: "var(--text-muted)" }}>
+            Tags (comma-separated)
+          </label>
+          <input
+            value={filterTags}
+            onChange={(e) => setFilterTags(e.target.value)}
+            placeholder="e.g. bug, critical, auth"
           />
         </div>
         <button

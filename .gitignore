@@ -50,3 +50,10 @@ Thumbs.db
 # Lock files — keep
 # DO NOT ignore package-lock.json or requirements.txt
 venv/
+.turbo/
+**/data/media/
+*.db-wal
+*.db-shm
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm

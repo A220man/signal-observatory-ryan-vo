@@ -32,7 +32,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Signal Observatory",
         description="Long-term memory for agent coding CLIs and handoff between agent vendors.",
-        version="1.0.0",
+        version="1.3.0",
         lifespan=lifespan,
         docs_url="/docs" if settings.app_env != "prod" else None,
         redoc_url=None,

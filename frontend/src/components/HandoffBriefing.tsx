@@ -54,10 +54,10 @@ export const HandoffBriefing: React.FC = () => {
     }
   };
 
-  const scorePercent = (score: number): number => {
-    // Normalize score to 0-100 for display (assuming max score ~1.0)
-    const normalized = Math.min(score * 50, 1.0);
-    return Math.round(normalized * 100);
+  const scorePercent = (score: number, maxScore: number): number => {
+    // Normalize score to 0-100 relative to the maximum score in the briefing
+    if (maxScore <= 0) return 0;
+    return Math.round((score / maxScore) * 100);
   };
 
   return (
@@ -181,7 +181,9 @@ export const HandoffBriefing: React.FC = () => {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {briefing.signals.map((s, idx) => (
+              {briefing.signals.map((s, idx) => {
+                const maxScore = briefing.signals[0]?.relevance_score ?? 1;
+                return (
                 <div
                   key={s.id}
                   style={{
@@ -219,7 +221,7 @@ export const HandoffBriefing: React.FC = () => {
                             fill="none"
                             stroke="var(--accent)"
                             strokeWidth="6"
-                            strokeDasharray={`${scorePercent(s.relevance_score)}, 100`}
+                            strokeDasharray={`${scorePercent(s.relevance_score, maxScore)}, 100`}
                             transform="rotate(-90 50 50)"
                           />
                         </svg>
@@ -237,7 +239,7 @@ export const HandoffBriefing: React.FC = () => {
                     {s.agent_id && <span>Agent: {s.agent_id}</span>}
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </div>

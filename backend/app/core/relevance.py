@@ -37,8 +37,7 @@ def compute_idf(vocab: set[str], document_tokens: list[list[str]]) -> dict[str, 
     N = len(document_tokens)
     if N == 0:
         return {}
-    df: dict[str, int] = field(default_factory=dict)  # placeholder, replaced below
-    df = {}
+    df: dict[str, int] = {}
     for tokens in document_tokens:
         seen = set(tokens)
         for t in seen:

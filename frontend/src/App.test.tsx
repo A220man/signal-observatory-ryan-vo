@@ -8,8 +8,10 @@ import App from "./App";
 import { AuthContext } from "./components/AuthProvider";
 import { Dashboard } from "./components/Dashboard";
 import { LoginPage } from "./components/LoginPage";
-import { api, ApiError } from "./api/client";
-import type { AuthContextType, UserRole, SignalPage } from "./types";
+import { SignalDetail } from "./components/SignalDetail";
+import * as apiModule from "./api/client";
+import { ApiError } from "./api/client";
+import type { AuthContextType, UserRole, SignalPage, SignalRead } from "./types";
 
 // Mock the API client
 vi.mock("./api/client", () => ({
@@ -106,7 +108,7 @@ describe("Dashboard", () => {
   });
 
   it("shows loading state initially then empty state for no signals", async () => {
-    vi.mocked(api.listSignals).mockResolvedValue(emptyPage);
+    vi.mocked(apiModule.api.listSignals).mockResolvedValue(emptyPage);
 
     renderWithAuth(<Dashboard />, makeContext({ token: "test", role: "viewer" }));
 
@@ -138,7 +140,7 @@ describe("Dashboard", () => {
       per_page: 50,
       has_more: false,
     };
-    vi.mocked(api.listSignals).mockResolvedValue(pageWithData);
+    vi.mocked(apiModule.api.listSignals).mockResolvedValue(pageWithData);
 
     renderWithAuth(<Dashboard />, makeContext({ token: "test", role: "viewer" }));
 
@@ -163,10 +165,124 @@ describe("App routing", () => {
   });
 
   it("renders dashboard route when authenticated", async () => {
-    vi.mocked(api.listSignals).mockResolvedValue(emptyPage);
+    vi.mocked(apiModule.api.listSignals).mockResolvedValue(emptyPage);
     renderWithAuth(<App />, makeContext({ token: "test", role: "viewer" }));
     await waitFor(() => {
       expect(screen.getByText(/Signal Dashboard/i)).toBeInTheDocument();
     });
+  });
+});
+
+const mockSignal: SignalRead = {
+  id: "test-signal-123",
+  workspace: "test-ws",
+  project: "test-proj",
+  content: "Test signal content for detail view",
+  tags: ["test", "detail"],
+  agent_id: "test-agent",
+  created_at: "2024-01-15T10:30:00Z",
+  updated_at: "2024-01-15T10:30:00Z",
+  relevance_score: 0.75,
+};
+
+describe("SignalDetail", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("displays signal details when loaded", async () => {
+    vi.mocked(apiModule.api.getSignal).mockResolvedValue(mockSignal);
+
+    renderWithAuth(<SignalDetail />, makeContext({ token: "test", role: "operator" }), "/signals/test-signal-123");
+
+    // Wait for loading to complete
+    await waitFor(() => {
+      expect(screen.queryByText(/loading signal/i)).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    expect(screen.getByText(/signal test-sig/i)).toBeInTheDocument();
+    expect(screen.getByText("test-ws")).toBeInTheDocument();
+    expect(screen.getByText("test-proj")).toBeInTheDocument();
+    expect(screen.getByText("Test signal content for detail view")).toBeInTheDocument();
+    expect(screen.getByText("test, detail")).toBeInTheDocument();
+    expect(screen.getByText("test-agent")).toBeInTheDocument();
+    expect(screen.getByText(/0\.7500/)).toBeInTheDocument();
+  });
+
+  it("allows operator to edit signal content", async () => {
+    vi.mocked(apiModule.api.getSignal).mockResolvedValue(mockSignal);
+    vi.mocked(apiModule.api.updateSignal).mockResolvedValue({ ...mockSignal, content: "Updated content" });
+
+    renderWithAuth(<SignalDetail />, makeContext({ token: "test", role: "operator" }), "/signals/test-signal-123");
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading signal/i)).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    expect(screen.getByText("Test signal content for detail view")).toBeInTheDocument();
+
+    // Click edit button
+    fireEvent.click(screen.getByRole("button", { name: /edit/i }));
+
+    // Verify edit form appears
+    expect(screen.getByDisplayValue("Test signal content for detail view")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("test, detail")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("test-agent")).toBeInTheDocument();
+
+    // Update content
+    const textarea = screen.getByDisplayValue("Test signal content for detail view");
+    fireEvent.change(textarea, { target: { value: "Updated content" } });
+
+    // Submit
+    fireEvent.click(screen.getByRole("button", { name: /save changes/i }));
+
+    await waitFor(() => {
+      expect(apiModule.api.updateSignal).toHaveBeenCalledWith(
+        "test-signal-123",
+        { content: "Updated content", tags: ["test", "detail"], agent_id: "test-agent" },
+        "test"
+      );
+    });
+  });
+
+  it("shows error state when signal not found", async () => {
+    vi.mocked(apiModule.api.getSignal).mockRejectedValueOnce(new ApiError(404, "Signal not found"));
+
+    renderWithAuth(<SignalDetail />, makeContext({ token: "test", role: "viewer" }), "/signals/nonexistent");
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading signal/i)).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/signal not found/i)).toBeInTheDocument();
+    });
+  });
+
+  it("allows admin to delete signal", async () => {
+    vi.mocked(apiModule.api.getSignal).mockResolvedValue(mockSignal);
+    vi.mocked(apiModule.api.deleteSignal).mockResolvedValue(undefined);
+
+    renderWithAuth(<SignalDetail />, makeContext({ token: "test", role: "admin" }), "/signals/test-signal-123");
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading signal/i)).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/signal test-sig/i)).toBeInTheDocument();
+    });
+
+    // Click delete button and confirm
+    const originalConfirm = window.confirm;
+    window.confirm = vi.fn().mockReturnValue(true);
+
+    fireEvent.click(screen.getByRole("button", { name: /delete/i }));
+
+    await waitFor(() => {
+      expect(apiModule.api.deleteSignal).toHaveBeenCalledWith("test-signal-123", "test");
+    });
+
+    window.confirm = originalConfirm;
   });
 });

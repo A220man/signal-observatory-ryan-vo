@@ -93,3 +93,17 @@ class HandoffResponse(BaseModel):
 def utc_now() -> datetime:
     """Return current UTC datetime."""
     return datetime.now(timezone.utc)
+
+class LLMAdvisoryRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    workspace: str = Field(..., min_length=1, max_length=128, description="Workspace for the advisory")
+    project: str = Field(..., min_length=1, max_length=128, description="Project for the advisory")
+    query: str = Field(..., min_length=1, max_length=10_000, description="Query for the LLM advisory")
+    provider: str = Field(..., min_length=1, max_length=128, description="LLM provider (openai-compatible, anthropic, gemini, ollama)")
+
+
+class LLMAdvisoryResponse(BaseModel):
+    provider: str
+    summary: str
+    note: Optional[str] = None

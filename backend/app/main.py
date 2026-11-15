@@ -14,6 +14,7 @@ from app.core.database import init_db
 from app.api.auth import router as auth_router
 from app.api.handoff import router as handoff_router
 from app.api.signals import router as signals_router
+from app.api.llm_advisory import router as llm_advisory_router
 
 
 @asynccontextmanager
@@ -55,6 +56,7 @@ def create_app() -> FastAPI:
 
     app.include_router(auth_router)
     app.include_router(signals_router)
+    app.include_router(llm_advisory_router)
     app.include_router(handoff_router)
 
     @app.get("/health")

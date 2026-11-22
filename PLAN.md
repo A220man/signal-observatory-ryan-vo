@@ -44,12 +44,16 @@ Tests: `frontend/src/App.test.tsx`
 
 ### llm-advisory-summaries — Optional LLM advisory summaries (opt-in)
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - LLM provider adapters for OpenAI-compatible, Anthropic, Gemini, Ollama
 - Summaries are labeled advisory and grounded in actual signal records
 - Provider errors never fabricate successful responses
+
+Implementation: `backend/app/core/llm.py`, `backend/app/services/llm_advisory.py`, `backend/app/api/llm_advisory.py`
+
+Tests: `backend/tests/test_llm_advisory.py`
 
 ### full-keycloak-oidc — Production Keycloak OIDC with SAML brokering
 

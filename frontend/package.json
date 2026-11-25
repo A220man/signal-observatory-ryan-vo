@@ -1,6 +1,6 @@
 {
   "name": "signal-observatory-frontend",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Signal Observatory - long-term memory for agent coding CLIs",
   "author": {
     "name": "Ryan Vo",

@@ -1,8 +1,15 @@
 # Changelog
 
+## 1.8.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.7.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+### Added
+- Optional LLM advisory summaries (opt-in): LLM provider adapters for OpenAI-compatible, Anthropic, Gemini, Ollama with grounding in actual signal records; summaries labeled advisory; provider errors never fabricate successful responses
 
 ## 1.6.0 — work-in-progress checkpoint
 
